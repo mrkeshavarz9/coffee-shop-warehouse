@@ -1,12 +1,14 @@
 CREATE TABLE IF NOT EXISTS dim_product (
     product_id SERIAL PRIMARY KEY,
-   product_name VARCHAR(100) NOT NULL,
-   category VARCHAR(30) NOT NULL,
-   size VARCHAR(30) NOT NULL,
-   temperature VARCHAR(30) NOT NULL
+    product_name VARCHAR(100) NOT NULL,
+    category VARCHAR(30) NOT NULL,
+    size VARCHAR(30) NOT NULL,
+    temperature VARCHAR(30) NOT NULL,
+    UNIQUE (product_name, size, temperature)
 );
 
 CREATE TABLE IF NOT EXISTS dim_store(
+
     store_id SERIAL PRIMARY KEY,
     store_name VARCHAR(100) NOT NULL,
     suburb VARCHAR(100) NOT NULL,
