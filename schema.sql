@@ -8,9 +8,8 @@ CREATE TABLE IF NOT EXISTS dim_product (
 );
 
 CREATE TABLE IF NOT EXISTS dim_store(
-
     store_id SERIAL PRIMARY KEY,
-    store_name VARCHAR(100) NOT NULL,
+    store_name VARCHAR(100) NOT NULL UNIQUE,
     suburb VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL
 );
@@ -18,7 +17,8 @@ CREATE TABLE IF NOT EXISTS dim_store(
 CREATE TABLE IF NOT EXISTS dim_customer (
     customer_id SERIAL PRIMARY KEY,
     customer_name VARCHAR(100) NOT NULL,
-    loyalty_tier VARCHAR(50) NOT NULL
+    loyalty_tier VARCHAR(50) NOT NULL,
+    card_number VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS dim_date (
