@@ -1,4 +1,5 @@
 from db import get_connection
+from datetime import date, timedelta
 
 products = [
     ("Espresso",        "Drink",  "Small", "Hot"),
@@ -33,6 +34,39 @@ customers = [
     ("CARD-10007", "Mia",       "Silver"),
 ]
 
+holidays = {
+    date(2025, 1, 1),    # New Year's Day
+    date(2025, 1, 27),   # Australia Day (observed)
+    date(2025, 4, 18),   # Good Friday
+    date(2025, 4, 19),   # Easter Saturday
+    date(2025, 4, 20),   # Easter Sunday
+    date(2025, 4, 21),   # Easter Monday
+    date(2025, 4, 25),   # Anzac Day
+    date(2025, 6, 9),    # King's Birthday
+    date(2025, 10, 6),   # Labour Day
+    date(2025, 12, 25),  # Christmas Day
+    date(2025, 12, 26),  # Boxing Day
+}
+date_rows = []
+start = date(2025, 1, 1)
+end = date(2025, 12, 31)
+d = start
+while d <= end:
+    date_key = int(d.strftime("%Y%m%d"))
+    full_date = d
+    day_name = d.strftime("%A")
+    year = d.year
+    quarter = (d.month - 1) // 3 + 1
+    month = d.month
+    is_holiday = d in holidays
+    is_weekend = d.weekday() >= 5
+    
+
+    row = (date_key, full_date, day_name, year, quarter, month, is_holiday, is_weekend)
+    date_rows.append(row)
+    d = d + timedelta(days=1)
+
+
 conn = get_connection()
 cur = conn.cursor()
 
@@ -54,7 +88,15 @@ cur.executemany("""
     ON CONFLICT (card_number) DO NOTHING
 """, customers)
 
+cur.executemany("""
+    INSERT INTO dim_date (date_key, full_date, day_name, year, quarter, month, is_holiday, is_weekend)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    ON CONFLICT (date_key ) DO NOTHING
+""", date_rows)
+
+
 conn.commit()
 cur.close()
 conn.close()
-print("dimensions  are loaded!")
+print("dimensions are loaded!")
+print(len(date_rows))
