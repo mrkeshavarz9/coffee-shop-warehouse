@@ -28,3 +28,11 @@ def get_connection():
     )
     return conn
 
+def get_ids(cur, query):
+    cur.execute(query)
+    rows = cur.fetchall()
+    ids = []
+    for row in rows:
+        ids.append(row[0])
+    return ids
+    

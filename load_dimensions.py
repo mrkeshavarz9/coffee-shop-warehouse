@@ -2,17 +2,17 @@ from db import get_connection
 from datetime import date, timedelta
 
 products = [
-    ("Espresso",        "Drink",  "Small", "Hot"),
-    ("Cappuccino",      "Drink",  "Small", "Hot"),
-    ("Cappuccino",      "Drink",  "Large", "Hot"),
-    ("Flat White",      "Drink",  "Small", "Hot"),
-    ("Latte",           "Drink",  "Large", "Hot"),
-    ("Chai Latte",      "Drink",  "Large", "Hot"),
-    ("Iced Latte",      "Drink",  "Large", "Cold"),
-    ("Cold Brew",       "Drink",  "Large", "Cold"),
-    ("Croissant",       "Pastry", "N/A",   "N/A"),
-    ("Banana Bread",    "Pastry", "N/A",   "N/A"),
-    ("Blueberry Muffin","Pastry", "N/A",   "N/A"),
+    ("Espresso",        "Drink",  "Small", "Hot", 4.00),
+    ("Cappuccino",      "Drink",  "Small", "Hot", 4.80),
+    ("Cappuccino",      "Drink",  "Large", "Hot", 5.80),
+    ("Flat White",      "Drink",  "Small", "Hot", 4.80),
+    ("Latte",           "Drink",  "Large", "Hot", 5.80),
+    ("Chai Latte",      "Drink",  "Large", "Hot", 5.50),
+    ("Iced Latte",      "Drink",  "Large", "Cold", 6.50),
+    ("Cold Brew",       "Drink",  "Large", "Cold", 6.00),
+    ("Croissant",       "Pastry", "N/A",   "N/A", 5.00),
+    ("Banana Bread",    "Pastry", "N/A",   "N/A", 5.50),
+    ("Blueberry Muffin","Pastry", "N/A",   "N/A", 5.00),
 ]
 
 stores = [
@@ -71,9 +71,10 @@ conn = get_connection()
 cur = conn.cursor()
 
 cur.executemany("""
-    INSERT INTO dim_product (product_name, category, size, temperature)
-    VALUES(%s, %s, %s, %s)
-    ON CONFLICT (product_name, size, temperature) DO NOTHING
+    INSERT INTO dim_product (product_name, category, size, temperature, list_price)
+    VALUES(%s, %s, %s, %s, %s)
+    ON CONFLICT (product_name, size, temperature) DO UPDATE SET
+        list_price = EXCLUDED.list_price
 """, products)
 
 cur.executemany("""

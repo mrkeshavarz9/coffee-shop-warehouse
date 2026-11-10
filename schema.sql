@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS dim_product (
     category VARCHAR(30) NOT NULL,
     size VARCHAR(30) NOT NULL,
     temperature VARCHAR(30) NOT NULL,
+    list_price NUMERIC(6, 2) NOT NULL
     UNIQUE (product_name, size, temperature)
 );
 
