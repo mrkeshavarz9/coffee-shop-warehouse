@@ -61,7 +61,6 @@ while d <= end:
     is_holiday = d in holidays
     is_weekend = d.weekday() >= 5
     
-
     row = (date_key, full_date, day_name, year, quarter, month, is_holiday, is_weekend)
     date_rows.append(row)
     d = d + timedelta(days=1)
