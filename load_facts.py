@@ -39,6 +39,7 @@ for order_id in range(1, 2001):
         sales_rows.append(row)
 
 # ---- 6. Load into fact_sales ----
+cur.execute("TRUNCATE TABLE fact_sales RESTART IDENTITY")
 cur.executemany("""
     INSERT INTO fact_sales (order_id, date_key, store_id, product_id, customer_id, quantity, amount)
     VALUES(%s, %s, %s, %s, %s, %s, %s)
