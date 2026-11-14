@@ -8,8 +8,11 @@ def get_engine():
     password = os.environ.get("POSTGRES_PASSWORD")
     if password is None:
         raise ValueError("POSTGRES_PASSWORD in .env file is missing!!!")
+    
+    host = os.environ.get("DB_HOST","127.0.0.1")
+    port = os.environ.get("DB_PORT","5433")
 
-    url = f"postgresql+psycopg2://coffee_admin:{password}@127.0.0.1:5433/coffee_shop"
+    url = f"postgresql+psycopg2://coffee_admin:{password}@{host}:{port}/coffee_shop"
     engine = create_engine(url)
     return engine
 
@@ -19,9 +22,12 @@ def get_connection():
     if password is None:
         raise ValueError("POSTGRES_PASSWORD in .env file is missing!!!")
 
+    host = os.environ.get("DB_HOST","127.0.0.1")
+    port = os.environ.get("DB_PORT","5433")
+
     conn = psycopg2.connect(
-    host="127.0.0.1",
-    port="5433",
+    host=host,
+    port=port,
     dbname="coffee_shop",
     user="coffee_admin",
     password=password
