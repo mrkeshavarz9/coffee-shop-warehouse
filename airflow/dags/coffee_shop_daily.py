@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from airflow.sdk import DAG
 from airflow.providers.standard.operators.bash import BashOperator
@@ -8,6 +8,11 @@ with DAG(
     schedule="@daily",
     start_date=datetime(2026, 11, 1),
     catchup=False,
+
+    default_args={
+        "retries": 2,
+        "retry_delay": timedelta(minutes=1),
+    },
 ):
 
     load_dimensions = BashOperator(
