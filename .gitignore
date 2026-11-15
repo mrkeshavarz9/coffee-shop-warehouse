@@ -2,3 +2,5 @@
 __pycache__/
 .ipynb_checkpoints/
 .vscode/
+airflow/logs/
+airflow/config/airflow.cfg
