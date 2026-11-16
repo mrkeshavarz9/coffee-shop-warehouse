@@ -1,5 +1,6 @@
 from db import get_connection
 from datetime import date, timedelta
+import sys
 
 products = [
     ("Espresso",        "Drink",  "Small", "Hot", 4.00),
@@ -66,37 +67,52 @@ while d <= end:
     d = d + timedelta(days=1)
 
 
+def load_products(cur):
+    cur.executemany("""
+        INSERT INTO dim_product (product_name, category, size, temperature, list_price)
+        VALUES(%s, %s, %s, %s, %s)
+        ON CONFLICT (product_name, size, temperature) DO UPDATE SET
+            list_price = EXCLUDED.list_price
+    """, products)
+
+def load_stores(cur):
+    cur.executemany("""
+        INSERT INTO dim_store (store_name, suburb, city)
+        VALUES (%s, %s, %s)
+        ON CONFLICT (store_name) DO NOTHING
+    """, stores)
+
+def load_customers(cur):
+    cur.executemany("""
+        INSERT INTO dim_customer (card_number, customer_name, loyalty_tier)
+        VALUES (%s, %s, %s)
+        ON CONFLICT (card_number) DO NOTHING
+    """, customers)
+
+def load_dates(cur):
+    cur.executemany("""
+        INSERT INTO dim_date (date_key, full_date, day_name, year, quarter, month, is_holiday, is_weekend)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (date_key ) DO NOTHING
+    """, date_rows)
+
 conn = get_connection()
 cur = conn.cursor()
 
-cur.executemany("""
-    INSERT INTO dim_product (product_name, category, size, temperature, list_price)
-    VALUES(%s, %s, %s, %s, %s)
-    ON CONFLICT (product_name, size, temperature) DO UPDATE SET
-        list_price = EXCLUDED.list_price
-""", products)
+choice = sys.argv[1]
 
-cur.executemany("""
-    INSERT INTO dim_store (store_name, suburb, city)
-    VALUES (%s, %s, %s)
-    ON CONFLICT (store_name) DO NOTHING
-""", stores)
-
-cur.executemany("""
-    INSERT INTO dim_customer (card_number, customer_name, loyalty_tier)
-    VALUES (%s, %s, %s)
-    ON CONFLICT (card_number) DO NOTHING
-""", customers)
-
-cur.executemany("""
-    INSERT INTO dim_date (date_key, full_date, day_name, year, quarter, month, is_holiday, is_weekend)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-    ON CONFLICT (date_key ) DO NOTHING
-""", date_rows)
-
+if choice == "products":
+    load_products(cur)
+elif choice == "stores":
+    load_stores(cur)
+elif choice == "customers":
+    load_customers(cur)
+elif choice == "dates":
+    load_dates(cur)
+else:
+    raise ValueError (f"Unknown dimension: {choice}")
 
 conn.commit()
 cur.close()
 conn.close()
-print("dimensions are loaded!")
-print(len(date_rows))
+print(f"{choice} loaded!")

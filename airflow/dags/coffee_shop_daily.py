@@ -15,9 +15,24 @@ with DAG(
     },
 ):
 
-    load_dimensions = BashOperator(
-        task_id="load_dimensions",
-        bash_command="cd /opt/airflow/project && python load_dimensions.py",
+    load_products = BashOperator(
+        task_id="load_products",
+        bash_command="cd /opt/airflow/project && python load_dimensions.py products",
+    )
+
+    load_stores = BashOperator(
+        task_id="load_stores",
+        bash_command="cd /opt/airflow/project && python load_dimensions.py stores",
+    )
+
+    load_customers = BashOperator(
+        task_id="load_customers",
+        bash_command="cd /opt/airflow/project && python load_dimensions.py customers",
+    )
+
+    load_dates = BashOperator(
+        task_id="load_dates",
+        bash_command="cd /opt/airflow/project && python load_dimensions.py dates",
     )
 
     load_facts = BashOperator(
@@ -30,4 +45,4 @@ with DAG(
         bash_command="cd /opt/airflow/project && python analysis.py",
     )
 
-    load_dimensions >> load_facts >> analysis
+    [load_products, load_stores, load_customers, load_dates] >> load_facts >> analysis
