@@ -45,4 +45,9 @@ with DAG(
         bash_command="cd /opt/airflow/project && python analysis.py",
     )
 
-    [load_products, load_stores, load_customers, load_dates] >> load_facts >> analysis
+    export_report = BashOperator(
+        task_id="export_report",
+        bash_command="cd /opt/airflow/project && python export_report.py {{ ds }}",
+    )
+
+    [load_products, load_stores, load_customers, load_dates] >> load_facts >> [analysis, export_report]

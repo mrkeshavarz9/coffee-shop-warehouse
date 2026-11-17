@@ -4,3 +4,4 @@ __pycache__/
 .vscode/
 airflow/logs/
 airflow/config/airflow.cfg
+*.csv

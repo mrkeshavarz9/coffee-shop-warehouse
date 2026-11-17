@@ -1,19 +1,10 @@
 import pandas as pd
 from db import get_engine
+from queries import STORE_REVENUE_QUERY
 
 engine = get_engine()
 
-store_revenue_query = ("""
-SELECT
-    store_name,
-    SUM(amount) AS revenue
-FROM fact_sales AS f
-JOIN dim_store AS s ON f.store_id = s.store_id
-GROUP BY store_name
-ORDER BY revenue DESC
-""")
-
-store_revenue = pd.read_sql(store_revenue_query, engine)
+store_revenue = pd.read_sql(STORE_REVENUE_QUERY, engine)
 print(store_revenue)
 print()
 
