@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: coffee_shop
+    schema: public
+    tables:
+      - name: fact_sales
+      - name: dim_store
+      - name: dim_product
+      - name: dim_customer
+      - name: dim_date
