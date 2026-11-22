@@ -10,6 +10,10 @@ models:
       - name: store_id
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
   - name: stg_stores
     columns:
       - name: store_id
