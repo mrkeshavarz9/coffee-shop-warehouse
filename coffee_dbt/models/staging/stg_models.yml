@@ -2,12 +2,14 @@ version: 2
 
 models:
   - name: stg_sales
+    description: "One row per product per order (one receipt line), cleaned from fact_sales."
     columns:
       - name: sale_id
         data_tests:
           - unique
           - not_null
       - name: store_id
+        description: "The store where the sale happened. Links to stg_stores.store_id." 
         data_tests:
           - not_null
           - relationships:
