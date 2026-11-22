@@ -1,5 +1,3 @@
-{{ config(materialized='table') }}
-
 SELECT
     store_name,
     SUM(sales_amount) AS revenue
