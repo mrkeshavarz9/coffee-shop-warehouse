@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: revenue_by_loyalty_tier
+    description: "One row per loyalty tier. Total revenue, number of orders and revenue per customer, to compare loyalty members with non-members."
+    columns:
+      - name: loyalty_tier
+        description: "Gold, Silver, Bronze, or None for buyers without a loyalty card."
+        data_tests:
+          - unique
+          - not_null
+      - name: revenue_per_customer
+        description: "Revenue divided by the number of distinct customers in the tier. Caution: the 'None' row is a single ANONYMOUS customer that stands for all buyers without a card, so its value is not the spend of one real person."
