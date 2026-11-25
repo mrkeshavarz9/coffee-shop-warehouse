@@ -1,0 +1,12 @@
+coffee_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('DB_HOST', '127.0.0.1') }}"
+      port: "{{ env_var('DB_PORT', '5433') | as_number }}"
+      user: coffee_admin
+      password: "{{ env_var('POSTGRES_PASSWORD') }}"
+      dbname: coffee_shop
+      schema: analytics
+      threads: 1
