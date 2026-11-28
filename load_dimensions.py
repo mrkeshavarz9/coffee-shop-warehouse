@@ -48,11 +48,8 @@ holidays = {
     date(2025, 12, 25),  # Christmas Day
     date(2025, 12, 26),  # Boxing Day
 }
-date_rows = []
-start = date(2025, 1, 1)
-end = date(2025, 12, 31)
-d = start
-while d <= end:
+
+def build_date_row(d):
     date_key = int(d.strftime("%Y%m%d"))
     full_date = d
     day_name = d.strftime("%A")
@@ -61,8 +58,16 @@ while d <= end:
     month = d.month
     is_holiday = d in holidays
     is_weekend = d.weekday() >= 5
-    
     row = (date_key, full_date, day_name, year, quarter, month, is_holiday, is_weekend)
+    return row
+
+
+date_rows = []
+start = date(2025, 1, 1)
+end = date(2025, 12, 31)
+d = start
+while d <= end:
+    row = build_date_row(d)
     date_rows.append(row)
     d = d + timedelta(days=1)
 
@@ -96,23 +101,23 @@ def load_dates(cur):
         ON CONFLICT (date_key ) DO NOTHING
     """, date_rows)
 
-conn = get_connection()
-cur = conn.cursor()
 
-choice = sys.argv[1]
+if __name__ == "__main__":
+    conn = get_connection()
+    cur = conn.cursor()
+    choice = sys.argv[1]
+    if choice == "products":
+     load_products(cur)
+    elif choice == "stores":
+     load_stores(cur)
+    elif choice == "customers":
+     load_customers(cur)
+    elif choice == "dates":
+     load_dates(cur)
+    else:
+        raise ValueError (f"Unknown dimension: {choice}")
 
-if choice == "products":
-    load_products(cur)
-elif choice == "stores":
-    load_stores(cur)
-elif choice == "customers":
-    load_customers(cur)
-elif choice == "dates":
-    load_dates(cur)
-else:
-    raise ValueError (f"Unknown dimension: {choice}")
-
-conn.commit()
-cur.close()
-conn.close()
-print(f"{choice} loaded!")
+    conn.commit()
+    cur.close()
+    conn.close()
+    print(f"{choice} loaded!")
